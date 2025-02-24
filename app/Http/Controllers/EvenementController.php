@@ -61,8 +61,11 @@ class EvenementController extends Controller
             'lieu'             => 'required|string|max:255',
             'date'             => 'required|date',
             'max_participants' => 'nullable|integer|min:1',
+            // Champs supplémentaires
+            'niveau'           => 'required|in:débutant,amateur,pro',
+            'tags'             => 'nullable|string|max:255',
         ]);
-
+    
         EvenementSportif::create([
             'titre'            => $request->titre,
             'description'      => $request->description,
@@ -70,13 +73,16 @@ class EvenementController extends Controller
             'lieu'             => $request->lieu,
             'date'             => $request->date,
             'max_participants' => $request->max_participants,
-            'user_id'          => Auth::id(),
+            'statut'           => 'ouvert',
+            'user_id'          => auth()->id(),
+            // Champs supplémentaires
+            'niveau'           => $request->niveau,
+            'tags'      =>       $request->tags,
         ]);
-
-        return redirect()
-            ->route('evenements.index')
-            ->with('success', 'Événement créé avec succès.');
+    
+        return redirect()->route('evenements.index')->with('success', 'Événement créé avec succès.');
     }
+    
 
     /**
      * Afficher un événement (le détail).

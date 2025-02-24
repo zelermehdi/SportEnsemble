@@ -77,8 +77,13 @@
                         <strong>Lieu : </strong> {{ $evenement->lieu }}
                     </p>
 
+                    <!-- Vérifier si l'utilisateur est inscrit à l'événement -->
+                    @php
+                        $estInscrit = auth()->check() && optional($evenement->participations)->contains('user_id', auth()->id());
+                    @endphp
+
                     <!-- Boutons d’action -->
-                    <div class="flex flex-wrap space-x-2">
+                    <div class="flex flex-wrap space-x-2 mt-3">
                         <a
                             href="{{ route('evenements.show', $evenement) }}"
                             class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition"
@@ -86,26 +91,34 @@
                             Détails
                         </a>
 
-                        <form action="{{ route('participations.participer', $evenement) }}" method="POST">
-                            @csrf
-                            <button
-                                type="submit"
-                                class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition"
-                            >
-                                Participer
-                            </button>
-                        </form>
+                        @auth
+                            <!-- Bouton Participer -->
+                            @if (!$estInscrit)
+                                <form action="{{ route('participations.participer', $evenement) }}" method="POST">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition"
+                                    >
+                                        Participer
+                                    </button>
+                                </form>
+                            @endif
 
-                        <form action="{{ route('participations.seRetirer', $evenement) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button
-                                type="submit"
-                                class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
-                            >
-                                Se retirer
-                            </button>
-                        </form>
+                            <!-- Bouton Se Retirer -->
+                            @if ($estInscrit)
+                                <form action="{{ route('participations.seRetirer', $evenement) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button
+                                        type="submit"
+                                        class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
+                                    >
+                                        Se retirer
+                                    </button>
+                                </form>
+                            @endif
+                        @endauth
                     </div>
                 </div>
             @endforeach

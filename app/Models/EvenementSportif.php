@@ -19,7 +19,9 @@ class EvenementSportif extends Model
         'lieu',
         'date',
         'max_participants',
-        'statut'
+        'statut',
+        'niveau',
+        'tags',
     ];
 
 

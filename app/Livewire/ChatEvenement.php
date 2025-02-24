@@ -36,7 +36,7 @@ class ChatEvenement extends Component
         }
 
         $this->reset('message');
-        $this->emit('messageEnvoye');
+        $this->dispatch('messageEnvoye');
     }
 
     public function render()

@@ -6,7 +6,8 @@ use App\Http\Controllers\{
     DashboardController,
     EvenementController,
     InvitationController,
-    ParticipationController
+    ParticipationController,
+    ProfileController
 };
 use Illuminate\Support\Facades\Auth;
 
@@ -82,3 +83,11 @@ Route::post('/logout', function () {
     Auth::logout();
     return redirect('/');
 })->name('logout');
+
+
+Route::middleware('auth')->group(function () {
+    // Formulaire d’édition de profil
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Mise à jour de profil
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});

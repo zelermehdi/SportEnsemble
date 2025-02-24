@@ -97,6 +97,38 @@
             @enderror
         </div>
 
+        <div>
+            <label for="niveau" class="block text-gray-700 font-medium mb-1">Niveau</label>
+            <select
+                name="niveau"
+                required
+                class="w-full p-2 border border-gray-300 rounded-lg"
+            >
+                <option value="débutant" @selected(old('niveau') === 'débutant')>Débutant</option>
+                <option value="amateur" @selected(old('niveau') === 'amateur')>Amateur</option>
+                <option value="pro" @selected(old('niveau') === 'pro')>Pro</option>
+            </select>
+            @error('niveau')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <!-- Nouveau champ : tags -->
+        <div>
+            <label for="tags" class="block text-gray-700 font-medium mb-1">
+                Tags (ex: "5v5, foot en salle")
+            </label>
+            <input
+                type="text"
+                name="tags"
+                class="w-full p-2 border border-gray-300 rounded-lg"
+                value="{{ old('tags') }}"
+            >
+            @error('tags')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
         <button
             type="submit"
             class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition w-full"

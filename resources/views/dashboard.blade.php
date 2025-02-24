@@ -14,10 +14,7 @@
                 @foreach($evenementsOrganises as $evenement)
                     <li class="text-gray-800">
                         {{ $evenement->titre }} – 
-                        <a
-                            href="{{ route('evenements.show', $evenement) }}"
-                            class="text-blue-500 hover:underline"
-                        >
+                        <a href="{{ route('evenements.show', $evenement) }}" class="text-blue-500 hover:underline">
                             Voir
                         </a>
                     </li>
@@ -36,10 +33,7 @@
                 @foreach($evenementsParticipes as $evenement)
                     <li class="text-gray-800">
                         {{ $evenement->titre }} – 
-                        <a
-                            href="{{ route('evenements.show', $evenement) }}"
-                            class="text-blue-500 hover:underline"
-                        >
+                        <a href="{{ route('evenements.show', $evenement) }}" class="text-blue-500 hover:underline">
                             Voir
                         </a>
                     </li>
@@ -70,23 +64,17 @@
                     </div>
                     <div class="flex space-x-2">
                         <!-- Accepter -->
-                        <form action="{{ route('invitations.accepter', $invitation) }}" method="POST">
+                        <form action="{{ route('invitations.accepter', $invitation->id) }}" method="POST">
                             @csrf
-                            <button
-                                type="submit"
-                                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-                            >
+                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
                                 Accepter
                             </button>
                         </form>
 
                         <!-- Refuser -->
-                        <form action="{{ route('invitations.refuser', $invitation) }}" method="POST">
+                        <form action="{{ route('invitations.refuser', $invitation->id) }}" method="POST">
                             @csrf
-                            <button
-                                type="submit"
-                                class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
-                            >
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
                                 Refuser
                             </button>
                         </form>
