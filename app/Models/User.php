@@ -42,4 +42,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+
+    public function participations()
+    {
+        return $this->hasMany(Participation::class, 'user_id');
+    }
+
+
+    public function isAdmin()
+{
+    return $this->role === 'admin';
+}
+
+public function invitationsRecues()
+{
+    return $this->hasMany(Invitation::class, 'invite_id');
+}
+
+
+public function evenementsSportifs()
+{
+    return $this->hasMany(EvenementSportif::class, 'user_id');
+}
+
+
 }
