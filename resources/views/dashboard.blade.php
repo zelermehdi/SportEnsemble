@@ -43,6 +43,12 @@
     </div>
 </div>
 
+<!-- **Carte au milieu du tableau de bord** -->
+<div class="bg-white shadow-md rounded-lg p-6 my-6">
+    <h3 class="text-xl font-semibold mb-3 text-green-700 text-center">Carte des événements</h3>
+    <div id="mapid" class="w-full h-96"></div>
+</div>
+
 <!-- Mes invitations -->
 <div class="bg-white shadow-md rounded-lg p-6 mt-6">
     <h3 class="text-xl font-semibold mb-3 text-green-700">Mes Invitations</h3>
@@ -85,3 +91,39 @@
     @endif
 </div>
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Initialiser la carte centrée sur un point par défaut
+    var map = L.map('mapid').setView([36.7525, 3.04197], 7);
+
+    // 2. Ajouter le "tile layer" OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // 3. Charger les événements depuis Laravel (via Blade et JSON)
+    var evenements = @json($evenementsParticipes);
+
+    // 4. Ajouter des marqueurs pour chaque événement
+    evenements.forEach(function(event) {
+        if (event.latitude && event.longitude) {
+            L.marker([event.latitude, event.longitude]).addTo(map)
+                .bindPopup("<strong>" + event.titre + "</strong><br>" + event.lieu);
+        }
+    });
+
+    // 5. Ajuster le zoom pour voir tous les marqueurs
+    if (evenements.length > 0) {
+        var markers = evenements
+            .filter(e => e.latitude && e.longitude)
+            .map(e => L.marker([e.latitude, e.longitude]));
+        if (markers.length > 0) {
+            var group = new L.featureGroup(markers);
+            map.fitBounds(group.getBounds());
+        }
+    }
+});
+</script>
+@endpush

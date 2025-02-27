@@ -64,6 +64,8 @@ class EvenementController extends Controller
             // Champs supplémentaires
             'niveau'           => 'required|in:débutant,amateur,pro',
             'tags'             => 'nullable|string|max:255',
+            'latitude'         => 'nullable|numeric',
+        'longitude'        => 'nullable|numeric',
         ]);
     
         EvenementSportif::create([
@@ -78,6 +80,8 @@ class EvenementController extends Controller
             // Champs supplémentaires
             'niveau'           => $request->niveau,
             'tags'      =>       $request->tags,
+            'latitude'         => $request->latitude,
+        'longitude'        => $request->longitude,
         ]);
     
         return redirect()->route('evenements.index')->with('success', 'Événement créé avec succès.');
@@ -93,5 +97,17 @@ class EvenementController extends Controller
         $evenement->load('participations.user', 'messages.user');
 
         return view('evenements.show', compact('evenement'));
+    }
+
+
+    public function map()
+    {
+        $evenements = EvenementSportif::whereNotNull('latitude')
+                         ->whereNotNull('longitude')
+                         ->get();
+    
+       
+    
+        return view('evenements.map', compact('evenements'));
     }
 }

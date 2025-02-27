@@ -4,6 +4,10 @@
 <div class="bg-white shadow-md rounded-lg p-6 mb-6">
     <h2 class="text-3xl font-bold text-green-700 mb-4">{{ $evenement->titre }}</h2>
     
+    @if($evenement->latitude && $evenement->longitude)
+        <div id="mapid" style="height: 300px;"></div>
+    @endif
+
     @if($evenement->description)
         <p class="text-gray-700 mb-3">{{ $evenement->description }}</p>
     @else
@@ -53,7 +57,10 @@
         <ul class="list-disc pl-5 space-y-1">
             @foreach($evenement->participations as $participation)
                 <li class="text-gray-800">
-                    {{ $participation->user->name }}
+                    <!-- Lien vers profil public -->
+                    <a href="{{ route('users.show', $participation->user) }}" class="text-blue-500 underline">
+                        {{ $participation->user->name }}
+                    </a>
                 </li>
             @endforeach
         </ul>
@@ -89,3 +96,19 @@
 </div>
 @endauth
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    @if($evenement->latitude && $evenement->longitude)
+        var mymap = L.map('mapid').setView([{{ $evenement->latitude }}, {{ $evenement->longitude }}], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(mymap);
+
+        L.marker([{{ $evenement->latitude }}, {{ $evenement->longitude }}]).addTo(mymap)
+          .bindPopup("{{ $evenement->titre }}");
+    @endif
+});
+</script>
+@endpush

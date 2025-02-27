@@ -51,4 +51,22 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.edit')->with('success', 'Profil mis à jour avec succès.');
     }
+
+    public function show(User $user)
+    {
+        // On peut éventuellement vérifier si on a le droit de voir ce profil
+        // si votre application a des restrictions. Pour l’instant on suppose
+        // que c’est un profil public ou au moins accessible aux utilisateurs connectés.
+    
+        return view('profile.show-public', compact('user'));
+    }
+
+
+
+
+
+
+
+
+
 }

@@ -4,7 +4,7 @@
 <div class="bg-green-50 rounded-xl p-6 flex flex-col md:flex-row items-center md:space-x-8">
     <!-- Image de sport -->
     <div class="md:w-1/2">
-        <img src="/images/hero-sport.jpg" alt="Hero Sport" class="rounded-lg shadow-lg">
+        <img src="/images/DALL·E 2025-02-26 15.15.36 - A professional and sleek logo for a sports event app called 'SportEnsemble'. The logo should have a modern and minimalist design, with strong and eleg.webp" alt="Hero Sport" class="rounded-lg shadow-lg">
     </div>
 
     <!-- Texte de présentation -->

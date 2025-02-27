@@ -32,6 +32,8 @@ Route::view('/profile', 'profile')
 // Auth routes (Laravel Breeze / Jetstream / etc.)
 require __DIR__.'/auth.php';
 
+
+Route::get('/evenements/map', [EvenementController::class, 'map'])->name('evenements.map');
 /**
  * Événements (lecture, création, etc.)
  */
@@ -44,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     // Affichage d’un événement (détails)
     Route::get('/evenements/{evenement}', [EvenementController::class, 'show'])->name('evenements.show');
 });
+
 
 /**
  * Participations
@@ -90,4 +93,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     // Mise à jour de profil
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    
 });
+
+
+
+
+
+Route::get('/users/{user}', [ProfileController::class, 'show'])
+    ->name('users.show');
+
+
+ 
+
+
+
+    Route::get('/test', function () {
+        dd("La route test est atteinte !");
+    })->name('test');

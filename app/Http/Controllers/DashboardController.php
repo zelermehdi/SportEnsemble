@@ -10,12 +10,13 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
-        // Récupère les événements organisés et les participations
+        // Récupérer les événements organisés et ceux auxquels l'utilisateur participe
         $evenementsOrganises  = $user->evenementsSportifs ?? collect([]);
         $evenementsParticipes = $user->participations
             ? $user->participations->map->evenement
             : collect([]);
-
+    
         return view('dashboard', compact('evenementsOrganises', 'evenementsParticipes'));
     }
+    
 }

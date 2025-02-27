@@ -22,6 +22,8 @@ class EvenementSportif extends Model
         'statut',
         'niveau',
         'tags',
+        'latitude',   
+        'longitude',  
     ];
 
 

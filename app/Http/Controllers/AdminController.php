@@ -22,10 +22,12 @@ class AdminController extends Controller
      */
     public function supprimerEvenement(EvenementSportif $evenement)
     {
+        if (auth()->user()->id !== $evenement->user_id && !auth()->user()->isAdmin()) {
+            abort(403, 'Vous n’êtes pas autorisé à supprimer cet événement.');
+        }
+    
         $evenement->delete();
-
-        return redirect()
-            ->route('admin.index')
-            ->with('success', 'Événement supprimé avec succès.');
+        return redirect()->route('admin.index')->with('success', 'Événement supprimé avec succès.');
     }
+    
 }
