@@ -1,6 +1,8 @@
 <?php
 
+
 use App\Models\EvenementSportif;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -21,5 +23,7 @@ Broadcast::channel('chat-evenement.{evenementId}', function ($user, $evenementId
     return \App\Models\EvenementSportif::find($evenementId) !== null;
 });
 
-
-
+Broadcast::channel('presence-chat-evenement.{id}', function ($user, $id) {
+    Log::info("Canal presence", ['user' => $user->id, 'evt' => $id]);
+    return ['id' => $user->id, 'name' => $user->name];
+});

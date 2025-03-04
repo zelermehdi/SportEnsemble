@@ -7,7 +7,10 @@ use App\Http\Controllers\{
     EvenementController,
     InvitationController,
     ParticipationController,
-    ProfileController
+    ProfileController,
+    PhotoController,
+    LikeController,
+    CommentController
 };
 use Illuminate\Support\Facades\Auth;
 
@@ -47,7 +50,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/evenements/{evenement}', [EvenementController::class, 'show'])->name('evenements.show');
 });
 
-
+Route::middleware('auth')->group(function() {
+    Route::get('/evenements/{evenement}/photos', [PhotoController::class, 'index'])->name('photos.index');
+    Route::get('/evenements/{evenement}/photos/create', [PhotoController::class, 'create'])->name('photos.create');
+    Route::post('/evenements/{evenement}/photos', [PhotoController::class, 'store'])->name('photos.store');
+});
 /**
  * Participations
  */
@@ -107,7 +114,6 @@ Route::get('/users/{user}', [ProfileController::class, 'show'])
  
 
 
-
-    Route::get('/test', function () {
-        dd("La route test est atteinte !");
-    })->name('test');
+    Route::delete('/photos/{photo}', [PhotoController::class, 'destroy'])->name('photos.destroy');
+    Route::post('/photos/{photo}/like', [LikeController::class, 'toggleLike'])->name('photos.like');
+    Route::post('/photos/{photo}/comment', [CommentController::class, 'store'])->name('photos.comment');

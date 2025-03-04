@@ -93,6 +93,8 @@
 @endsection
 @push('scripts')
 <script>
+@push('scripts')
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Initialiser la carte centrée sur un point par défaut
     var map = L.map('mapid').setView([36.7525, 3.04197], 7);
@@ -103,27 +105,26 @@ document.addEventListener('DOMContentLoaded', function() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // 3. Charger les événements depuis Laravel (via Blade et JSON)
-    var evenements = @json($evenementsParticipes);
+    // 3. Charger TOUS les événements depuis Laravel (via Blade et JSON)
+    var evenements = @json($tousLesEvenements);
 
     // 4. Ajouter des marqueurs pour chaque événement
+    var markers = [];
     evenements.forEach(function(event) {
         if (event.latitude && event.longitude) {
-            L.marker([event.latitude, event.longitude]).addTo(map)
+            var marker = L.marker([event.latitude, event.longitude]).addTo(map)
                 .bindPopup("<strong>" + event.titre + "</strong><br>" + event.lieu);
+            markers.push(marker);
         }
     });
 
     // 5. Ajuster le zoom pour voir tous les marqueurs
-    if (evenements.length > 0) {
-        var markers = evenements
-            .filter(e => e.latitude && e.longitude)
-            .map(e => L.marker([e.latitude, e.longitude]));
-        if (markers.length > 0) {
-            var group = new L.featureGroup(markers);
-            map.fitBounds(group.getBounds());
-        }
+    if (markers.length > 0) {
+        var group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds());
     }
 });
 </script>
+@endpush
+
 @endpush

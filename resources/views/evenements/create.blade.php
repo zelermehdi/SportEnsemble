@@ -39,6 +39,26 @@
             @enderror
         </div>
 
+
+
+
+
+
+        @if ($errors->any())
+        <div class="bg-red-100 text-red-700 p-4 mb-4 rounded">
+            <strong>Erreur(s) :</strong>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
+
+
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="lieu" class="block text-gray-700 font-medium mb-1">Lieu</label>

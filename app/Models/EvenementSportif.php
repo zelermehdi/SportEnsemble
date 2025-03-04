@@ -45,4 +45,11 @@ public function organisateur()
 {
     return $this->belongsTo(User::class, 'user_id');
 }
+public function photos()
+{
+    return $this->hasMany(Photo::class, 'evenement_sportif_id');
+}
+
+
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\EvenementSportif; // Importer le modèle
 
 class DashboardController extends Controller
 {
@@ -15,8 +16,10 @@ class DashboardController extends Controller
         $evenementsParticipes = $user->participations
             ? $user->participations->map->evenement
             : collect([]);
-    
-        return view('dashboard', compact('evenementsOrganises', 'evenementsParticipes'));
+
+        // Récupérer **tous les événements** pour les afficher sur la carte
+        $tousLesEvenements = EvenementSportif::all();
+
+        return view('dashboard', compact('evenementsOrganises', 'evenementsParticipes', 'tousLesEvenements'));
     }
-    
 }
