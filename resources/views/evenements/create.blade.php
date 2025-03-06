@@ -39,11 +39,6 @@
             @enderror
         </div>
 
-
-
-
-
-
         @if ($errors->any())
         <div class="bg-red-100 text-red-700 p-4 mb-4 rounded">
             <strong>Erreur(s) :</strong>
@@ -53,11 +48,7 @@
                 @endforeach
             </ul>
         </div>
-    @endif
-
-
-
-
+        @endif
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -116,6 +107,24 @@
                 placeholder="Décrivez votre événement (optionnel)"
             >{{ old('description') }}</textarea>
             @error('description')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <!-- Nouveau champ pour le statut -->
+        <div>
+            <label for="statut" class="block text-gray-700 font-medium mb-1">Statut</label>
+            <select
+                name="statut"
+                required
+                class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300"
+            >
+                <option value="" disabled @if(old('statut') === null) selected @endif>-- Sélectionnez un statut --</option>
+                <option value="ouvert" @selected(old('statut') === 'ouvert')>Ouvert</option>
+                <option value="fermé" @selected(old('statut') === 'fermé')>Fermé</option>
+                <option value="complet" @selected(old('statut') === 'complet')>Complet</option>
+            </select>
+            @error('statut')
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
