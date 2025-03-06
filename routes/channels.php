@@ -27,3 +27,8 @@ Broadcast::channel('presence-chat-evenement.{id}', function ($user, $id) {
     Log::info("Canal presence", ['user' => $user->id, 'evt' => $id]);
     return ['id' => $user->id, 'name' => $user->name];
 });
+
+
+Broadcast::channel('notifications.{userId}', function ($user, $userId) {
+    return (int) $user->id === (int) $userId;
+});
