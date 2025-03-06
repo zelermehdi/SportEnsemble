@@ -10,7 +10,8 @@ use App\Http\Controllers\{
     ProfileController,
     PhotoController,
     LikeController,
-    CommentController
+    CommentController,
+    CalendrierEvenements
 };
 use Illuminate\Support\Facades\Auth;
 
@@ -48,12 +49,25 @@ Route::middleware(['auth'])->group(function () {
 
     // Affichage d’un événement (détails)
     Route::get('/evenements/{evenement}', [EvenementController::class, 'show'])->name('evenements.show');
+
+    Route::get('evenements/{evenement}/edit', [EvenementController::class, 'edit'])->name('evenements.edit');
+    Route::put('evenements/{evenement}', [EvenementController::class, 'update'])->name('evenements.update');
+    
+    // Route dédiée pour annuler un événement
+    Route::post('evenements/{evenement}/annuler', [EvenementController::class, 'annuler'])->name('evenements.annuler');
+
+
+
+
+
 });
 
 Route::middleware('auth')->group(function() {
     Route::get('/evenements/{evenement}/photos', [PhotoController::class, 'index'])->name('photos.index');
     Route::get('/evenements/{evenement}/photos/create', [PhotoController::class, 'create'])->name('photos.create');
     Route::post('/evenements/{evenement}/photos', [PhotoController::class, 'store'])->name('photos.store');
+
+    
 });
 /**
  * Participations
@@ -101,14 +115,13 @@ Route::middleware('auth')->group(function () {
     // Mise à jour de profil
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     
+Route::get('/users/{user}', [ProfileController::class, 'show'])
+->name('users.show');
 });
 
 
 
 
-
-Route::get('/users/{user}', [ProfileController::class, 'show'])
-    ->name('users.show');
 
 
  
