@@ -1,53 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white shadow-md rounded-lg p-6 mb-6">
-    <h2 class="text-3xl font-bold text-green-700 mb-4">{{ $evenement->titre }}</h2>
+
+<!-- Carte et Informations de l'Événement -->
+<div class="bg-white shadow-lg rounded-xl p-8 mb-8 transition-transform transform hover:scale-[1.01]">
+    <h2 class="text-4xl font-bold text-green-700 mb-6 text-center">
+        📍 {{ $evenement->titre }}
+    </h2>
 
     @if($evenement->latitude && $evenement->longitude)
-        <div id="mapid" style="height: 300px;"></div>
+        <div id="mapid" class="rounded-lg overflow-hidden shadow-md" style="height: 350px;"></div>
     @endif
 
-    <p class="text-gray-600 mb-1">
-        <strong>Date :</strong> 
-        {{ \Carbon\Carbon::parse($evenement->date)->format('d/m/Y H:i') }}
-    </p>
-    <p class="text-gray-600 mb-1">
-        <strong>Lieu :</strong> {{ $evenement->lieu }}
-    </p>
-    <p class="text-gray-600 mb-3">
-        <strong>Max participants :</strong> {{ $evenement->max_participants ?? 'Illimité' }}
-    </p>
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+        <div class="space-y-3 text-gray-700">
+            <p class="flex items-center text-lg">
+                <span class="text-2xl text-green-500">📅</span> 
+                <strong class="ml-2">Date :</strong> {{ \Carbon\Carbon::parse($evenement->date)->format('d/m/Y H:i') }}
+            </p>
+            <p class="flex items-center text-lg">
+                <span class="text-2xl text-green-500">📍</span> 
+                <strong class="ml-2">Lieu :</strong> {{ $evenement->lieu }}
+            </p>
+            <p class="flex items-center text-lg">
+                <span class="text-2xl text-green-500">👥</span> 
+                <strong class="ml-2">Participants max :</strong> {{ $evenement->max_participants ?? 'Illimité' }}
+            </p>
+        </div>
 
-    @auth
-        @if($evenement->participations->contains('user_id', auth()->id()))
-            <form action="{{ route('participations.seRetirer', $evenement) }}" method="POST" class="mb-4">
-                @csrf
-                @method('DELETE')
-                <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-                    Quitter l'événement
-                </button>
-            </form>
-        @endif
-    @endauth
+        @auth
+            @if($evenement->participations->contains('user_id', auth()->id()))
+                <form action="{{ route('participations.seRetirer', $evenement) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button class="w-full bg-red-500 text-white px-5 py-3 rounded-lg hover:bg-red-600 transition font-semibold">
+                        ❌ Quitter l'événement
+                    </button>
+                </form>
+            @endif
+        @endauth
+    </div>
 </div>
 
-<!-- Chat Section (Livewire) -->
-<div class="bg-white shadow-md rounded-lg p-6 mb-6">
-    <h4 class="text-xl font-semibold mb-3 text-green-700">Chat</h4>
+<!-- Chat Section -->
+<div class="bg-white shadow-lg rounded-xl p-6 mb-8">
+    <h4 class="text-2xl font-semibold mb-4 text-green-700">💬 Chat en direct</h4>
     <livewire:chat-evenement :evenementId="$evenement->id" />
 </div>
 
 <!-- Participants -->
-<div class="bg-white shadow-md rounded-lg p-6 mb-6">
-    <h3 class="text-xl font-semibold mb-3 text-green-700">Participants</h3>
+<div class="bg-white shadow-lg rounded-xl p-6 mb-8">
+    <h3 class="text-2xl font-semibold mb-4 text-green-700">👥 Participants</h3>
     @if($evenement->participations->isEmpty())
-        <p class="text-gray-500">Aucun participant pour le moment.</p>
+        <p class="text-gray-500 italic">Aucun participant pour le moment.</p>
     @else
-        <ul class="list-disc pl-5 space-y-1">
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
             @foreach($evenement->participations as $participation)
-                <li class="text-gray-800">
-                    <a href="{{ route('users.show', $participation->user) }}" class="text-blue-500 underline">
+                <li class="flex items-center bg-gray-100 p-3 rounded-lg shadow-md">
+                    <span class="text-green-500 text-xl">✅</span>
+                    <a href="{{ route('users.show', $participation->user) }}" class="ml-3 text-gray-800 font-semibold hover:text-blue-500">
                         {{ $participation->user->name }}
                     </a>
                 </li>
@@ -56,49 +67,33 @@
     @endif
 </div>
 
-<!-- 🌟 Galerie de photos avec Likes et Commentaires -->
-<div class="bg-white shadow-md rounded-lg p-6 mb-6">
-    <h3 class="text-xl font-semibold text-green-700 mb-3">Photos de l'événement</h3>
-
+<!-- Galerie de photos avec Likes et Commentaires -->
+<div class="bg-white shadow-lg rounded-xl p-6 mb-8">
+    <h3 class="text-2xl font-semibold text-green-700 mb-4">📸 Photos de l'événement</h3>
     @if($evenement->photos->isEmpty())
         <p class="text-gray-500">Aucune photo pour le moment. Soyez le premier à en ajouter !</p>
     @else
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach($evenement->photos as $photo)
-                <div class="relative">
-                    <img src="{{ asset('storage/'.$photo->path) }}" alt="Photo" class="rounded-lg shadow w-full">
-
-                    <!-- Bouton de suppression -->
-                    @if(auth()->id() == $photo->user_id || auth()->id() == $evenement->user_id)
-                        <form action="{{ route('photos.destroy', $photo) }}" method="POST" class="absolute top-1 right-1">
-                            @csrf
-                            @method('DELETE')
-                            <button class="bg-red-500 text-white text-xs px-2 py-1 rounded">✖</button>
-                        </form>
-                    @endif
-
+                <div class="relative group">
+                    <img src="{{ asset('storage/'.$photo->path) }}" alt="Photo" class="rounded-lg shadow-lg transition-transform transform group-hover:scale-105">
+                    
                     <!-- Likes et Commentaires -->
                     <div class="flex justify-between items-center mt-2">
                         <form action="{{ route('photos.like', $photo) }}" method="POST">
                             @csrf
                             <button type="submit" class="flex items-center space-x-1">
                                 <span class="text-gray-700">{{ $photo->likes->count() }}</span>
-                                @if($photo->isLikedByUser())
-                                    ❤️
-                                @else
-                                    🤍
-                                @endif
+                                @if($photo->isLikedByUser()) ❤️ @else 🤍 @endif
                             </button>
                         </form>
-
                         <span class="text-sm text-gray-500">{{ $photo->comments->count() }} Commentaires</span>
                     </div>
 
                     <!-- Formulaire de commentaire -->
                     <form action="{{ route('photos.comment', $photo) }}" method="POST" class="mt-2">
                         @csrf
-                        <input type="text" name="contenu" placeholder="Ajouter un commentaire..." 
-                            class="border p-2 rounded w-full">
+                        <input type="text" name="contenu" placeholder="Ajouter un commentaire..." class="border p-2 rounded w-full">
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Commenter</button>
                     </form>
 
@@ -114,37 +109,20 @@
     @endif
 </div>
 
-<!-- 📸 Ajouter une photo -->
+<!-- Ajouter une photo -->
 @if(auth()->check())
-    <div class="bg-white shadow-md rounded-lg p-6">
-        <h3 class="text-xl font-semibold text-green-700 mb-3">Ajouter une photo</h3>
+    <div class="bg-white shadow-lg rounded-xl p-6 mb-8">
+        <h3 class="text-2xl font-semibold text-green-700 mb-4">➕ Ajouter une photo</h3>
         <form action="{{ route('photos.store', $evenement) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
-            <input type="file" name="photo" required class="border p-2 rounded">
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
-                Télécharger
+            <input type="file" name="photo" required class="w-full p-3 border border-gray-300 rounded-lg">
+            <button type="submit" class="bg-green-500 text-white px-5 py-3 rounded-lg hover:bg-green-600 transition">
+                📤 Télécharger
             </button>
         </form>
     </div>
 @endif
 
-<!-- Invitation -->
-@auth
-<div class="bg-white shadow-md rounded-lg p-6">
-    <h3 class="text-xl font-semibold mb-3 text-green-700">Inviter un utilisateur</h3>
-    <form action="{{ route('invitations.inviter', $evenement) }}" method="POST" class="space-y-4">
-        @csrf
-        <select name="invite_id" class="w-full p-2 border border-gray-300 rounded-lg">
-            @foreach(\App\Models\User::where('id', '!=', auth()->id())->get() as $user)
-                <option value="{{ $user->id }}">{{ $user->name }}</option>
-            @endforeach
-        </select>
-        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
-            Envoyer l'invitation
-        </button>
-    </form>
-</div>
-@endauth
 @endsection
 
 @push('scripts')
@@ -156,8 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
             maxZoom: 19,
         }).addTo(mymap);
 
-        L.marker([{{ $evenement->latitude }}, {{ $evenement->longitude }}]).addTo(mymap)
-          .bindPopup("{{ $evenement->titre }}");
+        L.marker([{{ $evenement->latitude }}, {{ $evenement->longitude }}])
+          .addTo(mymap)
+          .bindPopup("<strong>{{ $evenement->titre }}</strong>");
     @endif
 });
 </script>
