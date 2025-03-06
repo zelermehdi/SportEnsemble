@@ -53,15 +53,12 @@ class EvenementController extends Controller
     /**
      * Enregistrer un nouvel événement.
      */
-
     public function store(Request $request)
     {
         Log::info('🚀 Tentative de création d’un événement', ['user_id' => auth()->id()]);
-    
-        // 🔍 Log des données reçues
         Log::info('📝 Données reçues', $request->all());
-    
-        // Validation des champs
+
+        // Validation avec messages personnalisés
         $request->validate([
             'titre' => 'required|string|max:255',
             'type_sport' => 'required|string',
@@ -71,12 +68,19 @@ class EvenementController extends Controller
             'description' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'statut' => 'required|in:ouvert,fermé,complet',
+        ], [
+            'titre.required' => 'Le titre de l’événement est obligatoire.',
+            'type_sport.required' => 'Veuillez sélectionner un type de sport.',
+            'lieu.required' => 'Le lieu est requis.',
+            'date.required' => 'Veuillez choisir une date pour l’événement.',
+            'statut.required' => 'Veuillez définir le statut de l’événement.',
+            'max_participants.min' => 'Le nombre de participants doit être au moins 1.',
         ]);
-    
+
         Log::info('✅ Validation réussie');
-    
+
         try {
-            // Création de l'événement
             $evenement = EvenementSportif::create([
                 'titre' => $request->titre,
                 'type_sport' => $request->type_sport,
@@ -87,39 +91,98 @@ class EvenementController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'user_id' => auth()->id(),
+                'statut' => $request->statut,
             ]);
-    
+
             Log::info('🎉 Événement créé avec succès', ['id' => $evenement->id]);
-    
+
             return redirect()->route('evenements.index')->with('success', 'Événement créé avec succès !');
         } catch (\Exception $e) {
             Log::error('❌ Erreur lors de la création', ['message' => $e->getMessage()]);
             return back()->withErrors('Erreur lors de la création de l’événement.');
         }
     }
-    
-    
+
 
     /**
-     * Afficher un événement (le détail).
+     * Afficher un événement (détail).
      */
     public function show(EvenementSportif $evenement)
     {
-        // on peut charger les participations et messages
         $evenement->load('participations.user', 'messages.user');
-
         return view('evenements.show', compact('evenement'));
     }
 
-
+    /**
+     * Afficher la carte des événements.
+     */
     public function map()
     {
-        $evenements = EvenementSportif::whereNotNull('latitude')
-                         ->whereNotNull('longitude')
-                         ->get();
-    
-       
-    
+        $evenements = EvenementSportif::whereNotNull('latitude')->whereNotNull('longitude')->get();
         return view('evenements.map', compact('evenements'));
     }
+
+    /**
+     * Modifier un événement.
+     */
+    public function update(Request $request, EvenementSportif $evenement)
+    {
+        
+        // Vérification que l'utilisateur est l'organisateur
+        if (auth()->id() !== $evenement->user_id) {
+            abort(403, "Vous n'êtes pas autorisé à modifier cet événement.");
+        }
+        
+        // Si l'événement est complet, empêcher toute modification du statut
+        if ($evenement->statut === 'complet') {
+            return redirect()->back()->withErrors("L'événement est complet et ne peut plus être modifié.");
+        }
+    
+        // Validation du statut
+        $data = $request->validate([
+            'statut' => 'required|in:ouvert,fermé,complet',
+        ], [
+            'statut.required' => 'Veuillez définir le statut de l’événement.',
+            'statut.in' => 'Le statut choisi est invalide.',
+        ]);
+    
+        // Mise à jour du statut
+        $evenement->update([
+            'statut' => $data['statut']
+        ]);
+    
+        return redirect()->route('evenements.index')->with('success', 'Statut de l’événement mis à jour avec succès.');
+    }
+    
+
+
+    // /**
+    //  * Annuler un événement.
+    //  */
+    public function annuler(EvenementSportif $evenement)
+    {
+        // Vérification que l'utilisateur est l'organisateur
+        if (auth()->id() !== $evenement->user_id) {
+            abort(403, "Vous n'êtes pas autorisé à annuler cet événement.");
+        }
+    
+        // Annulation de l'événement en mettant le statut à 'fermé'
+        $evenement->update(['statut' => 'fermé']);
+    
+        return redirect()->route('evenements.index')->with('success', 'Événement annulé avec succès.');
+    }
+    
+    public function edit(EvenementSportif $evenement)
+{
+    // Vérifier que l'utilisateur est l'organisateur de l'événement
+    if (auth()->id() !== $evenement->user_id) {
+        abort(403, "Vous n'êtes pas autorisé à modifier cet événement.");
+    }
+    
+    // Retourner la vue d'édition avec l'événement concerné
+    return view('evenements.edit', compact('evenement'));
+}
+
+    
+
 }
