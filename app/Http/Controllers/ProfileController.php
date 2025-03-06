@@ -54,9 +54,9 @@ class ProfileController extends Controller
 
     public function show(User $user)
     {
-        // On peut éventuellement vérifier si on a le droit de voir ce profil
-        // si votre application a des restrictions. Pour l’instant on suppose
-        // que c’est un profil public ou au moins accessible aux utilisateurs connectés.
+        // if (auth()->id() !== $user->id()) {
+        //     abort(403, 'Accès interdit.');
+        // }
     
         return view('profile.show-public', compact('user'));
     }
