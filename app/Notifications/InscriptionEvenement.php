@@ -3,10 +3,11 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use App\Models\EvenementSportif;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Models\EvenementSportif;
 
 class InscriptionEvenement extends Notification
 {
@@ -21,7 +22,14 @@ class InscriptionEvenement extends Notification
 
     public function via($notifiable)
     {
-        return ['database']; // Stockage en base de données
+        Log::info('🚀 Notification envoyée : Inscription à un événement !', [
+            'user_id' => $notifiable->id,
+            'evenement' => $this->evenement->titre,
+        ]);
+
+
+
+        return ['database','broadcast']; // Stockage en base de données
     }
 
     public function toArray($notifiable)
