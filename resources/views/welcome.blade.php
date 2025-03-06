@@ -1,49 +1,44 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-green-50 rounded-xl p-6 flex flex-col md:flex-row items-center md:space-x-8">
-    <!-- Image de sport -->
-    <div class="md:w-1/2">
-        <img src="/images/DALL·E 2025-02-26 15.15.36 - A professional and sleek logo for a sports event app called 'SportEnsemble'. The logo should have a modern and minimalist design, with strong and eleg.webp" alt="Hero Sport" class="rounded-lg shadow-lg">
-    </div>
-
-    <!-- Texte de présentation -->
-    <div class="md:w-1/2 mt-6 md:mt-0">
-        <h1 class="text-3xl md:text-4xl font-bold text-green-700 mb-4">
-            Rejoignez nos événements sportifs près de chez vous!
-        </h1>
-        <p class="text-gray-700 mb-4">
-            Découvrez et organisez des rencontres sportives, élargissez votre réseau 
-            et pratiquez vos sports favoris. Avec SportEnsemble, c’est plus facile de 
-            trouver des coéquipiers ou de lancer un match improvisé!
-        </p>
-        <div class="space-x-2">
-            <a 
-                href="{{ route('evenements.index') }}" 
-                class="inline-block bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-            >
-                Voir les événements
-            </a>
-            <a 
-                href="{{ route('register') }}"
-                class="inline-block bg-white border border-green-600 text-green-600 px-4 py-2 rounded-lg 
-                       hover:bg-green-600 hover:text-white transition"
-            >
-                Rejoindre maintenant
-            </a>
+<div class="relative bg-cover bg-center h-screen flex items-center justify-center" style="background-image: url('/images/C:\laragon\www\SportEnsemble\public\images\DALL·E 2025-02-26 15.15.36 - A professional and sleek logo for a sports event app called 'SportEnsemble'. The logo should have a modern and minimalist design, with strong and eleg.webp');">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative text-center text-white px-6">
+        <h1 class="text-5xl font-extrabold mb-4 animate-fade-in">SportEnsemble</h1>
+        <p class="text-lg mb-6 animate-fade-in">Rejoignez une communauté sportive et participez à des événements près de chez vous !</p>
+        <div class="space-x-4 animate-fade-in">
+            <a href="{{ route('evenements.index') }}" class="bg-green-500 px-6 py-3 rounded-lg text-white font-semibold shadow-lg hover:bg-green-600 transition">Voir les événements</a>
+            <a href="{{ route('register') }}" class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-green-600 hover:text-white transition">Rejoindre maintenant</a>
         </div>
     </div>
 </div>
 
-<!-- Section d’info supplémentaire -->
-<div class="mt-12 bg-white p-6 rounded-xl shadow-md">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Comment ça marche ?</h2>
-    <ol class="list-decimal list-inside text-gray-700 space-y-2">
-        <li>Créez un compte ou connectez-vous</li>
-        <li>Parcourez les événements sportifs près de chez vous</li>
-        <li>Rejoignez une partie ou organisez la vôtre</li>
-        <li>Invitez vos amis et rencontrez de nouveaux partenaires</li>
-        <li>Profitez d’une communauté sportive active!</li>
-    </ol>
+<!-- Section Présentation -->
+<div class="container mx-auto px-6 py-12">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Pourquoi SportEnsemble ?</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition">
+            <img src="/icons/team.svg" class="w-16 mx-auto mb-4">
+            <h3 class="text-xl font-semibold text-green-700">Rencontrez des sportifs</h3>
+            <p class="text-gray-600">Trouvez facilement des partenaires et des équipes pour jouer avec vous.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition">
+            <img src="/icons/schedule.svg" class="w-16 mx-auto mb-4">
+            <h3 class="text-xl font-semibold text-green-700">Événements dynamiques</h3>
+            <p class="text-gray-600">Rejoignez ou organisez des événements sportifs en quelques clics.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-xl transition">
+            <img src="/icons/notification.svg" class="w-16 mx-auto mb-4">
+            <h3 class="text-xl font-semibold text-green-700">Notifications instantanées</h3>
+            <p class="text-gray-600">Recevez des alertes sur les événements et invitations en temps réel.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Section Appel à l'action -->
+<div class="bg-green-600 text-white text-center py-12 mt-12">
+    <h2 class="text-3xl font-bold mb-4">Prêt à rejoindre l'aventure ?</h2>
+    <p class="text-lg mb-6">Inscrivez-vous maintenant et participez à vos premiers événements !</p>
+    <a href="{{ route('register') }}" class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-green-700 hover:text-white transition">Créer un compte</a>
 </div>
 @endsection
