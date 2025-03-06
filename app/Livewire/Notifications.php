@@ -11,7 +11,7 @@ class Notifications extends Component
 
     public $notifications = [];
 
-    protected $listeners = ['notificationRecu' => 'chargerNotifications'];
+    protected $listeners = ['echo:notifications.{userId},NotificationSent' => 'chargerNotifications'];
 
     public function mount()
     {
